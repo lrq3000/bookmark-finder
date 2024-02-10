@@ -1,0 +1,9 @@
+body {
+    margin: 0px;
+    background: #fafafa;
+    font-family: Roboto, arial, sans-serif;
+    font-size: 14px;
+    color: #333333;
+    min-width: 640px;
+    min-height: 360px;
+}

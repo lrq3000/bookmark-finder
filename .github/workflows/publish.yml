@@ -1,0 +1,72 @@
+name: Publish
+
+on:
+  workflow_dispatch:
+
+jobs:
+  publish-addon:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      with:
+        token: ${{ secrets.RELEASE_BOOKMARK_FINDER }}
+
+    - name: Increase version and update file
+      id: version_increase
+      run: python3 .github/increase_version.py
+
+    - name: Commit and push if changed
+      run: |
+        git config user.email "actions@github.com"
+        git config user.name "GitHub Actions"
+        git add src/__init__.py
+        git commit -m "Update version number"
+        git push origin main
+      env:
+        GIT_TOKEN: ${{ secrets.RELEASE_BOOKMARK_FINDER }}
+
+    - name: Update file with new version number
+      id: version_update
+      run: python3 .github/update_version.py
+
+    - name: Create and push tag
+      run: |
+        git tag release-${{ steps.version_update.outputs.new_version }}
+        git push origin release-${{ steps.version_update.outputs.new_version }}
+
+    - name: Zip source files
+      run: |
+        mkdir bookmark-finder
+        cp -r src/* bookmark-finder/
+        zip -r artifact.zip bookmark-finder/
+        rm -rf bookmark-finder
+        echo "Source files zipped into artifact.zip with root folder renamed."
+
+    - name: Read Changelog
+      id: changelog
+      run: |
+        changelog=$(cat src/latest_changelog.md)
+        echo "::set-output name=changelog::$changelog"
+
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.RELEASE_BOOKMARK_FINDER }}
+      with:
+        tag_name: v${{ steps.version_update.outputs.new_version }}
+        release_name: Release v${{ steps.version_update.outputs.new_version }}
+        body: ${{ steps.changelog.outputs.changelog }}
+        draft: false
+        prerelease: false
+
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.RELEASE_BOOKMARK_FINDER }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./artifact.zip
+        asset_name: bookmark_finder-v${{ steps.version_update.outputs.new_version }}.zip
+        asset_content_type: application/zip

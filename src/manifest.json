@@ -1,0 +1,30 @@
+{
+  "manifest_version": 3,
+  "name": "Bookmark Finder",
+  "description": "Bookmark Finder transforms your bookmarked pages into a searchable database, enabling you to discover them through keywords as if operating your very own personal search engine. It guarantees that all indexed data is stored securely in your local storage, ensuring privacy and speed without the need for external data calls. Experience swift, secure, and efficient searching directly within your browser.",
+  "version": "2024.1.0",
+  "icons": {
+    "16": "img/icon-16.png",
+    "32": "img/icon-32.png",
+    "48": "img/icon-48.png",
+    "128": "img/icon-128.png"
+  },
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "permissions": [
+    "clipboardRead",
+    "clipboardWrite",
+    "tabs",
+    "scripting",
+    "bookmarks",
+    "storage",
+    "unlimitedStorage"
+  ], 
+  "host_permissions": [
+    "<all_urls>"
+  ]
+}
