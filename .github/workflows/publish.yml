@@ -37,11 +37,9 @@ jobs:
 
     - name: Zip source files
       run: |
-        mkdir bookmark-finder
-        cp -r src/* bookmark-finder/
-        zip -r artifact.zip bookmark-finder/
-        rm -rf bookmark-finder
-        echo "Source files zipped into artifact.zip with root folder renamed."
+        cd src && zip -r ../artifact.zip .
+        cd ..
+        echo "Source files zipped into artifact.zip"
 
     - name: Read Changelog
       id: changelog
