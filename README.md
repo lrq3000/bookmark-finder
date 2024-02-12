@@ -1,6 +1,6 @@
 # Bookmark Finder
 
-Bookmark Finder transforms your bookmarked pages into a searchable database, enabling you to discover content through keywords as if operating your very own personal search engine. It ensures that all indexed data is securely stored in your local storage, guaranteeing privacy and speed without the need for external data calls. Experience swift, secure, and efficient searching directly within your browser.
+Bookmark Finder transforms your bookmarked pages with **their contents** into a searchable database, enabling you to discover content through keywords as if operating your very own personal search engine. It ensures that all indexed data is securely stored in your local storage, guaranteeing privacy and speed without the need for external data calls. Experience swift, secure, and efficient searching directly within your browser.
 
 ## User Guide
 
@@ -48,6 +48,8 @@ Easily search among your bookmarked pages by using keywords. To conduct a search
 ![Search](res/04-search-1.png?raw=true "Search")
 
 4. The search result page will display all bookmarked pages containing the keyword(s). Clicking on the title or URL of each page will open it in a new tab.
+
+![Search](res/04-search-2.png?raw=true "Search")
 
 ## Notes
 
