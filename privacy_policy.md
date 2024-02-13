@@ -28,4 +28,4 @@ We are dedicated to protecting your privacy and handling your data with the utmo
 
 ## Changes to This Privacy Policy
 
-We may update our Privacy Policy from time to time by posting the new version in here. We will not send you a notification of these updates unless required by law. It is your responsibility to review our Privacy Policy periodically for any changes.
+We may update our Privacy Policy from time to time by posting the new version [**in here**](https://github.com/Xiaohan-Tian/bookmark-finder/blob/main/privacy_policy.md). We will not send you a notification of these updates unless required by law. It is your responsibility to review our Privacy Policy periodically for any changes.
