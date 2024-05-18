@@ -7,7 +7,7 @@ Bookmark Finder transforms your bookmarked pages with **their contents** into a 
 ### Installation
 
 #### Install via Chrome Web Store (Recommended)
-(Upcoming)
+You can install this [**extension directly via Chrome Web Store**](https://chromewebstore.google.com/detail/bookmark-finder/afnalmifnoilklcknoaaeomnnikainpj?hl=en-US&utm_source=ext_sidebar).
 
 #### Install via Unpacked Zip File
 Download the Bookmark Finder Chrome Extension zip file from our [**release page**](https://github.com/Xiaohan-Tian/bookmark-finder/releases). Extract all the files into an empty folder.
