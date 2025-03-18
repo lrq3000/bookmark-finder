@@ -88,14 +88,27 @@ const processPage = (url) => {
                         target: { tabId: tabId, allFrames: false },
                         func: getContent,
                     },
-                    (injectionResult) => {
-                        if (injectionResult && injectionResult.length > 0) {
-                            resolve(injectionResult[0].result);
+                    (contentInjectionResult) => {
+                        if (contentInjectionResult && contentInjectionResult.length > 0) {
+                            chrome.scripting.executeScript(
+                                {
+                                    target: { tabId: tabId, allFrames: false },
+                                    func: getTitle,
+                                },
+                                (titleInjectionResult) => {
+                                    if (titleInjectionResult && titleInjectionResult.length > 0) {
+                                        resolve({pageContent: contentInjectionResult[0].result, pageTitle: titleInjectionResult[0].result});
+                                    }
+                                    else {
+                                        reject(`failed to capture page title from ${url}`);
+                                    }
+                                });
                         }
                         else {
                             reject(`failed to capture content from ${url}`);
                         }
 
+                        // cleanup listener and close the tab before the next
                         chrome.tabs.onUpdated.removeListener(indexPageWhenLoaded);
                         chrome.tabs.onRemoved.removeListener(handleCloseTab);
                         chrome.tabs.remove(tabId);
@@ -133,8 +146,8 @@ const indexBookmarks = async () => {
 
     for (let i = 0; i < bmsList.length; i++) {
         try {
-            const content = await processPage(bmsList[i].url);
-            bmsList[i]['content'] = bmsList[i].title + "\\n" + bmsList[i].url + "\\n" + content;
+            const pageData = await processPage(bmsList[i].url);
+            bmsList[i]['content'] = bmsList[i].title + "\\n" + pageData.pageTitle + "\\n" + bmsList[i].url + "\\n" + pageData.pageContent;
         } catch (e)  {
             console.log(`Error processing ${bmsList[i].url}: ${e}`);
             bmsList[i]['content'] = bmsList[i].title + "\\n" + bmsList[i].url;
