@@ -135,13 +135,13 @@ const indexBookmarks = async () => {
         try {
             const content = await processPage(bmsList[i].url);
             bmsList[i]['content'] = bmsList[i].title + "\\n" + bmsList[i].url + "\\n" + content;
-    
-            // document.querySelector(`#label_index_progress`).innerHTML = `${i + 1} / ${bmsList.length}`;
-            updateProgress(Math.round((i + 1) * 100 / bmsList.length));
         } catch (e)  {
             console.log(`Error processing ${bmsList[i].url}: ${e}`);
             bmsList[i]['content'] = bmsList[i].title + "\\n" + bmsList[i].url;
         }
+        // Update progress bar in any case, because we passed one more bookmark
+        // document.querySelector(`#label_index_progress`).innerHTML = `${i + 1} / ${bmsList.length}`;
+        updateProgress(Math.round((i + 1) * 100 / bmsList.length));
 
         await waitForTime(500);
     }
