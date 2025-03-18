@@ -51,6 +51,8 @@ Easily search among your bookmarked pages by using keywords. To conduct a search
 
 ![Search](res/04-search-2.png?raw=true "Search")
 
+Note that the indexing is very basic and literal, there is no natural language processing, no stemming. This means that searching for "can" will not match "can't" as they will be considered as two different words. Same for "l'armure" and "armure".
+
 ## Notes
 
 - Bookmark Finder utilizes a third-party library for the client-side search index feature: [**Lunr.js**](https://github.com/olivernn/lunr.js)
