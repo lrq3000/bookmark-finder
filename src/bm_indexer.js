@@ -134,13 +134,13 @@ const indexBookmarks = async () => {
     for (let i = 0; i < bmsList.length; i++) {
         try {
             const content = await processPage(bmsList[i].url);
-            bmsList[i]['content'] = content;
+            bmsList[i]['content'] = bmsList[i].title + "\\n" + bmsList[i].url + "\\n" + content;
     
             // document.querySelector(`#label_index_progress`).innerHTML = `${i + 1} / ${bmsList.length}`;
             updateProgress(Math.round((i + 1) * 100 / bmsList.length));
         } catch (e)  {
-            console.log(e);
-            console.log(`skipping bmList i = ${i}; bmsList[i].url = ${bmsList[i].url}`);
+            console.log(`Error processing ${bmsList[i].url}: ${e}`);
+            bmsList[i]['content'] = bmsList[i].title + "\\n" + bmsList[i].url;
         }
 
         await waitForTime(500);
