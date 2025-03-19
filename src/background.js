@@ -153,6 +153,10 @@ const getIndex = async () => {
     }
   }
 
+  if (!bms) { // Initialize bms if it's null (in case we are indexing newly created bookmarks without a full reindex of past bookmarks first)
+    bms = [];
+  }
+
   return index;
 };
 
@@ -252,6 +256,7 @@ const query = async (request, sender) => {
   console.log(`query keywords`);
 
   const index = await getIndex();
+  console.log("Index in query:", index); // ADDED LOG
 
   // validation
   if (!index) {
@@ -259,7 +264,9 @@ const query = async (request, sender) => {
   }
 
   // query result
+  console.log("Keywords in query:", request.keywords); // ADDED LOG
   const result = index.search(request.keywords);
+  console.log("Search result:", result); // ADDED LOG
 
   // append bookmark content
   const resultUUIDs = [];
@@ -330,8 +337,10 @@ chrome.runtime.onMessage.addListener(
       return await query(request, sender);
     }
     else if (request.req == "reset") {
+      console.log("Resetting index and bookmarks..."); // ADDED LOG
       await removeFromLocalStorage(constants.SAVED_INDEX);
       await removeFromLocalStorage(constants.SAVED_BMS);
+      console.log("Index and bookmarks removed from local storage."); // ADDED LOG
 
       return { success: "done" };
     }
@@ -343,6 +352,16 @@ chrome.bookmarks.onCreated.addListener((id, newBmNode) => {
   Promise.resolve((async () => {
     console.log(`adding new bm on-the-fly`);
     // retrieve the current index from local storage.
+    if (!index) { // Check if index is null (not yet created)
+      // Create a new empty index
+      // This allows to start indexing newly created bookmarks even if we did not index past ones via a full reindex (very time consuming)
+      index = lunrMutable(function () {
+        this.ref(`uuid`);
+        this.field(`content`);
+        this.metadataWhitelist = ['position'];
+      });
+      console.log(`default empty index created on first bookmark`);
+    }
     index = await getIndex();
     // capture the content of the newly bookmarked page. This function opens the bookmark URL in a tab (briefly), executes content scripts to extract the title and content, and then closes the tab.
     let pageContent = { content: "" }; // Default empty content
