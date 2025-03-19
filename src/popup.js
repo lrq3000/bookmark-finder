@@ -213,7 +213,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.querySelectorAll('.search-bar-on-rp').forEach(e => e.classList.add('dark-mode-search-bar-on-rp'));
         document.querySelectorAll('.search-button-on-rp').forEach(e => e.classList.add('dark-mode-search-button-on-rp'));
         document.querySelectorAll('.search-result').forEach(e => e.classList.add('dark-mode-search-result'));
-        darkModeToggle.innerHTML = '<img src="./img/sun_icon.png" alt="Light Mode" class="dark-mode-icon"> Light Mode';
+        darkModeToggle.innerHTML = '<img src="./img/sun_icon.png" alt="Light Mode" class="dark-mode-icon">Light Mode';
         chrome.storage.local.set({ darkMode: true });
     };
 
@@ -225,7 +225,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.querySelectorAll('.search-bar-on-rp').forEach(e => e.classList.remove('dark-mode-search-bar-on-rp'));
         document.querySelectorAll('.search-button-on-rp').forEach(e => e.classList.remove('dark-mode-search-button-on-rp'));
         document.querySelectorAll('.search-result').forEach(e => e.classList.remove('dark-mode-search-result'));
-        darkModeToggle.innerHTML = '<img src="./img/moon_icon.png" alt="Dark Mode" class="dark-mode-icon"> Dark Mode';
+        darkModeToggle.innerHTML = '<img src="./img/moon_icon.png" alt="Dark Mode" class="dark-mode-icon">Dark Mode';
         chrome.storage.local.set({ darkMode: false });
     };
 
