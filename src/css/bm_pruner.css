@@ -1,0 +1,105 @@
+body,
+html {
+    height: 100%;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f3f3f3;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.content {
+    background-color: #ffffff;
+    padding: 20px 40px 40px 40px;
+    text-align: center;
+    border-radius: 12px;
+    width: 560px;
+}
+
+img.logo {
+    max-width: 410px;
+    /* margin-bottom: 20px; */
+}
+
+.search-button {
+    padding: 10px 20px;
+    margin: 0 4px;
+    background-color: #f8f9fa;
+    border: 1px solid #f8f9fa;
+    border-radius: 4px;
+    background-color: #03A6D6;
+    color: #ffffff;
+    font-size: 14px;
+    cursor: pointer;
+    outline: none;
+    width: 128px;
+    transition: background-color 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+
+.search-button:hover {
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+.search-button:active {
+    background-color: #014A64;
+    transform: translateY(2px);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.search-button:disabled {
+    background-color: #014A64;
+    color: #e0e0e0;
+    background-color: #f8f9fa;
+}
+
+.progress-container {
+    width: 100%;
+    background-color: #e0e0e0;
+    border-radius: 12px;
+    margin: 20px 0;
+    visibility: hidden;
+    position: relative;
+    /* Needed for absolute positioning of the text */
+}
+
+.progress-bar {
+    width: 0%;
+    height: 24px;
+    /* Updated height */
+    background-color: #4CAF50;
+    border-radius: 12px;
+    position: relative;
+    /* For text overlay */
+}
+
+.progress-text {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    line-height: 24px;
+    /* Updated to match the height of the progress bar */
+    color: white;
+    top: 0;
+    font-size: 14px;
+    /* Updated font size */
+}
+
+.content h3 {
+    font-size: 20px;
+    /* line-height: 1.3; */
+}
+
+.content p {
+    text-align: left;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+#hint_done {
+    display: none;
+}

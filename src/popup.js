@@ -178,6 +178,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     };
 
+    document.querySelector(`#btn_prune`).onclick = () => {
+        const popupWindow = chrome.windows.create({
+            url: chrome.runtime.getURL(`bm_pruner.html`)
+        });
+    };
+
     document.querySelector(`#btn_query`).onclick = () => {
         Promise.resolve(queryKeywords(document.querySelector(`#text_query`).value)).then(handleQueryResult);
     };

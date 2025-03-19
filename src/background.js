@@ -344,9 +344,62 @@ chrome.runtime.onMessage.addListener(
 
       return { success: "done" };
     }
+    else if (request.req == "prune") {
+      return await pruneBookmarks(request, sender);
+    }
+    else if (request.req == "getIndexedBookmarks") {
+      return await getIndexedBookmarks(request, sender);
+    }
   })
 );
 
+// handler - get indexed bookmarks
+const getIndexedBookmarks = async (request, sender) => {
+  console.log(`getIndexedBookmarks`);
+  return { bms: bms };
+};
+
+// handler - prune stale bookmarks
+const pruneBookmarks = async (request, sender) => {
+  console.log(`pruneBookmarks`);
+
+  const urlToRemove = request.url;
+  let prunedCount = 0;
+
+  if (bms && index && urlToRemove) {
+    const initialBmsLength = bms.length;
+
+    // Filter out bookmarks with the URL to remove
+    bms = bms.filter(bm => bm.url !== urlToRemove);
+
+    // Remove documents from Lunr index with the URL to remove
+    let newIndex = lunrMutable(function () {
+      this.ref(`uuid`);
+      this.field(`content`);
+      this.metadataWhitelist = ['position'];
+    });
+
+    bms.forEach(function (doc) {
+      newIndex.add(doc);
+    });
+
+    index = newIndex;
+
+    prunedCount = initialBmsLength - bms.length;
+
+    // save updated index and bookmarks
+    await saveToLocalStorage(constants.SAVED_INDEX, JSON.stringify(index));
+    await saveToLocalStorage(constants.SAVED_BMS, JSON.stringify(bms));
+
+    console.log(`Pruned ${prunedCount} entries for URL: ${urlToRemove}`);
+
+    return { success: true, count: prunedCount };
+  }
+  else {
+    console.warn(`Pruning failed: missing bms, index, or urlToRemove`);
+    return { success: false, count: 0 };
+  }
+};
 // listener - new bookmark added
 chrome.bookmarks.onCreated.addListener((id, newBmNode) => {
   Promise.resolve((async () => {

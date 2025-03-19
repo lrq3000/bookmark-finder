@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prune Bookmarks</title>
+  <link rel="stylesheet" href="./css/bm_pruner.css">
+  <script src="bm_pruner.js"></script>
+</head>
+
+<body>
+  <div class="container">
+    <div class="content">
+      <img src="/img/banner.png" alt="Logo" class="logo">
+      <h3>Prune Index for Stale Bookmarks</h3>
+
+      <p id="hint_in_progress">Please click the "Start" button below to initiate the pruning process.
+        The add-on will then check your indexed bookmarks and remove entries that are no longer present in your browser bookmarks.<br><br>
+        Please DO NOT close this window until the pruning process is complete.
+      </p>
+
+      <p id="hint_done">Pruning has been completed successfully.<br><br>
+        You can safely close this window now.
+      </p>
+      
+      <p id="hint_prune_done" style="display: none;">Pruning complete. <span id="pruned_count"></span> entries removed.<br><br>
+        You can safely close this window now.
+      </p>
+
+      <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+        <div class="progress-text" id="progressText">0%</div>
+      </div>
+
+      <button id="btn_start_index" class="search-button">Start</button>
+    </div>
+  </div>
+</body>
+
+</html>
