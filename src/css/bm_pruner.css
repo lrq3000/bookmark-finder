@@ -103,3 +103,74 @@ img.logo {
 #hint_done {
     display: none;
 }
+
+/* Dark Mode Styles */
+body.dark-mode-body,
+html.dark-mode-body {
+    background-color: #121212;
+    color: #ffffff;
+}
+
+.dark-mode-body .content {
+    background-color: #1e1e1e;
+}
+
+.dark-mode-body .search-button {
+    background-color: #252525;
+    color: #ffffff;
+    border-color: #252525;
+}
+
+.dark-mode-body .search-button:hover {
+    background-color: #333333;
+    box-shadow: 0 1px 1px rgba(255, 255, 255, 0.1);
+}
+
+.dark-mode-body .search-button:active {
+    background-color: #444444;
+    transform: translateY(2px);
+    box-shadow: 0 1px 2px rgba(255, 255, 255, 0.2);
+}
+
+.dark-mode-body .search-button:disabled {
+    background-color: #444444; /* Slightly darker for disabled state in dark mode */
+    color: #e0e0e0;
+    border-color: #252525; /* Keep border consistent with dark mode */
+}
+
+.dark-mode-body .progress-container {
+    background-color: #333333; /* Darker progress container */
+}
+
+.dark-mode-body .progress-bar {
+    background-color: #4CAF50; /* Keep progress bar color consistent */
+}
+
+.dark-mode-body .progress-text {
+    color: #ffffff; /* White text for progress */
+}
+
+.dark-mode-body .content h3 {
+    color: #ffffff;
+}
+
+.dark-mode-body .content p {
+    color: #ffffff; /* White text for paragraphs */
+}
+
+/* Dark mode scrollbar styles (if needed, consider adding if scrollbars are visible) */
+.dark-mode-body ::-webkit-scrollbar-track {
+    background: #1e1e1e;
+}
+
+.dark-mode-body ::-webkit-scrollbar-thumb {
+    background: #666;
+}
+
+.dark-mode-body ::-webkit-scrollbar-thumb:hover {
+    background: #999;
+}
+
+.dark-mode-body * {
+    scrollbar-color: #666 #1e1e1e;
+}
