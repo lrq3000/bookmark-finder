@@ -201,7 +201,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
 
     document.querySelector(`#btn_reset`).onclick = () => {
-        Promise.resolve(resetIndex()).then(handleResetResult);
+        if (window.confirm("This button will delete the whole database. Continue?")) {
+            Promise.resolve(resetIndex()).then(handleResetResult);
+        }
     };
 
     document.querySelector(`#result_page_logo`).onclick = () => {
