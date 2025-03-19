@@ -56,3 +56,18 @@ Note that the indexing is very basic and literal, there is no natural language p
 ## Notes
 
 - Bookmark Finder utilizes a third-party library for the client-side search index feature: [**Lunr.js**](https://github.com/olivernn/lunr.js)
+- You can start indexing new bookmarks without reindexing old ones if you want to use the extension asap without waiting. Just create a new bookmark, and it will be indexed.
+
+## Known limitations
+- once a bookmark is added, it is forever indexed until the database is reset or reindexed. Indeed, deleted bookmarks will remain indexed. This is because we cannot know if the user deleted a bookmark that was a duplicate, and hence they want to keep the bookmark indexed, or whether it is a true deletion, without any other copy. So by default, to be on the safe side, everything is kept unless the user specifically deletes the database.
+- There is no database export nor import. However, the database can be rebuilt at anytime given the same bookmarks set, by using the reindex button. Hence, the bookmarks are your real database, and this extension simply builds an index over it at any point in time, so the lack of an export/import feature is just an inconvenience, as the reindexing can be quite time consuming.
+
+## License
+
+Apache License Version 2.0.
+
+## Authors
+
+This is a fork of Xiaohan Tian's original work: https://github.com/Xiaohan-Tian/bookmark-finder
+
+This fork is developed and maintained by Stephen Karl Larroque at https://github.com/lrq3000/bookmark-finder
