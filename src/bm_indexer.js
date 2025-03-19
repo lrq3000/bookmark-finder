@@ -72,63 +72,84 @@ const getAllBookmarks = () => {
     });
 }
 
+// utility - execute script and handle errors
+const executeContentScript = (tabId, func) => {
+    return new Promise((resolve, reject) => {
+        chrome.scripting.executeScript(
+            {
+                target: { tabId: tabId, allFrames: false },
+                func: func,
+            },
+            (injectionResult) => {
+                if (chrome.runtime.lastError) {
+                    reject(chrome.runtime.lastError.message);
+                } else if (injectionResult && injectionResult.length > 0) {
+                    resolve(injectionResult[0].result);
+                } else {
+                    reject(`Script execution failed or returned empty result`);
+                }
+            }
+        );
+    });
+};
+
 // open a webpage and get page title and capture page content
 const processPage = (url) => {
     return new Promise(async (resolve, reject) => {
-        await chrome.tabs.create({ url: url });
+        let tabId;
 
-        const indexPageWhenLoaded = async (tabId, info, tab) => {
-            console.log(`indexPageWhenLoaded: info.status = ${info.status}`);
-            if (info.status === 'complete') {
-                console.log(`info.status = ${info.status}`);
-                console.log(tab);
-        
-                chrome.scripting.executeScript(
-                    {
-                        target: { tabId: tabId, allFrames: false },
-                        func: getContent,
-                    },
-                    (contentInjectionResult) => {
-                        if (contentInjectionResult && contentInjectionResult.length > 0) {
-                            chrome.scripting.executeScript(
-                                {
-                                    target: { tabId: tabId, allFrames: false },
-                                    func: getTitle,
-                                },
-                                (titleInjectionResult) => {
-                                    if (titleInjectionResult && titleInjectionResult.length > 0) {
-                                        resolve({pageContent: contentInjectionResult[0].result, pageTitle: titleInjectionResult[0].result});
-                                    }
-                                    else {
-                                        reject(`failed to capture page title from ${url}`);
-                                    }
-                                });
-                        }
-                        else {
-                            reject(`failed to capture content from ${url}`);
-                        }
-
-                        // cleanup listener and close the tab before the next
-                        chrome.tabs.onUpdated.removeListener(indexPageWhenLoaded);
-                        chrome.tabs.onRemoved.removeListener(handleCloseTab);
-                        chrome.tabs.remove(tabId);
-                    });
+        const cleanup = () => {
+            chrome.tabs.onUpdated.removeListener(indexPageWhenLoaded);
+            chrome.tabs.onRemoved.removeListener(handleCloseTab);
+            if (tabId) {
+                chrome.tabs.remove(tabId);
             }
         };
 
-        const handleCloseTab = async (tabId, info) => {
-            console.log(`tab has been closed`);
+        const handleCloseTab = async (closedTabId, info) => {
+            if (closedTabId === tabId) {
+                console.log(`tab has been closed for url: ${url}`);
+                cleanup();
+                reject(`Tab closed prematurely for URL: ${url}`);
+            }
+        };
 
-            reject(`tab has been closed ${url}`);
+        const indexPageWhenLoaded = async (updatedTabId, info) => {
+            if (updatedTabId === tabId && info.status === 'complete') {
+                console.log(`Tab loaded for url: ${url}`);
+                chrome.tabs.get(tabId, async (tab) => { // get tab to ensure it's still valid
+                    if (chrome.runtime.lastError || !tab) {
+                        cleanup();
+                        reject(chrome.runtime.lastError ? chrome.runtime.lastError.message : `Tab not found for URL: ${url}`);
+                        return;
+                    }
 
-            chrome.tabs.onUpdated.removeListener(indexPageWhenLoaded);
-            chrome.tabs.onRemoved.removeListener(handleCloseTab);
+                    try {
+                        const pageContent = await executeContentScript(tabId, getContent);
+                        const pageTitle = await executeContentScript(tabId, getTitle);
+                        resolve({ pageContent, pageTitle });
+                    } catch (error) {
+                        reject(`Failed to process page content for ${url}: ${error}`);
+                    } finally {
+                        cleanup();
+                    }
+                });
+            }
         };
 
         chrome.tabs.onUpdated.addListener(indexPageWhenLoaded);
         chrome.tabs.onRemoved.addListener(handleCloseTab);
+
+        try {
+            const tab = await chrome.tabs.create({ url: url });
+            tabId = tab.id;
+        } catch (e) {
+            cleanup();
+            reject(`Failed to open tab for ${url}: ${e}`);
+        }
     });
 };
+
 
 // update progress
 const updateProgress = (percent) => {
@@ -147,13 +168,12 @@ const indexBookmarks = async () => {
     for (let i = 0; i < bmsList.length; i++) {
         try {
             const pageData = await processPage(bmsList[i].url);
-            bmsList[i]['content'] = bmsList[i].title + "\\n" + pageData.pageTitle + "\\n" + bmsList[i].url + "\\n" + pageData.pageContent;
-        } catch (e)  {
-            console.log(`Error processing ${bmsList[i].url}: ${e}`);
-            bmsList[i]['content'] = bmsList[i].title + "\\n" + bmsList[i].url;
+            bmsList[i]['content'] = bmsList[i].title + " \n " + pageData.pageTitle + " \n " + bmsList[i].url + " \n " + pageData.pageContent;
+        } catch (e) {
+            console.error(`Error processing ${bmsList[i].url}: ${e}`);
+            bmsList[i]['content'] = bmsList[i].title + " \n " + bmsList[i].url;
         }
         // Update progress bar in any case, because we passed one more bookmark
-        // document.querySelector(`#label_index_progress`).innerHTML = `${i + 1} / ${bmsList.length}`;
         updateProgress(Math.round((i + 1) * 100 / bmsList.length));
 
         await waitForTime(500);
