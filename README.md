@@ -35,7 +35,7 @@ Before searching your bookmarked pages, you need to build the index for your exi
 
 ![Open Reindex Window](res/03-reindex-1.png?raw=true "Open Reindex Window")
 
-3. On the "Index Bookmarks" page, click the "Start" button to begin the indexing process. The Bookmark Finder add-on will sequentially open and index the contents of your existing bookmarked pages. The duration of this process depends on the number of pages bookmarked and their loading speeds. Please refrain from closing the window until the progress bar reaches 100%.
+3. On the "Index Bookmarks" page, click the "Start" button to begin the indexing process. The Bookmark Finder add-on will sequentially open and index the contents of your existing bookmarked pages. For each bookmark, the bookmark's title, URL, page's title and page's content are indexed and hence searchable. The duration of this process depends on the number of pages bookmarked and their loading speeds. Please refrain from closing the window until the progress bar reaches 100%.
 
 ![Index bookmarked pages](res/03-reindex-2.png?raw=true "Index bookmarked pages")
 
