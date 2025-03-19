@@ -341,16 +341,33 @@ chrome.runtime.onMessage.addListener(
 // listener - new bookmark added
 chrome.bookmarks.onCreated.addListener((id, newBmNode) => {
   Promise.resolve((async () => {
-    console.log(`adding new bm`);
+    console.log(`adding new bm on-the-fly`);
+    // retrieve the current index from local storage.
     index = await getIndex();
-    const newBm = await promiseGetPage();
-    console.log(newBm);
+    // capture the content of the newly bookmarked page. This function opens the bookmark URL in a tab (briefly), executes content scripts to extract the title and content, and then closes the tab.
+    let pageContent = { content: "" }; // Default empty content
+    try { // this may fail if tab is opened by another extension (eg, suspended tab)
+      pageContent = await promiseGetPage();
+      console.log(pageContent);
+    } catch (error) {
+      console.warn("Failed to get page content:", error);
+      // Use default empty content
+    }
 
+    const newBm = {
+      title: newBmNode.title, // Bookmark title
+      url: newBmNode.url,     // Bookmark URL
+      content: pageContent.content ? `${newBmNode.title} ${pageContent.title} ${pageContent.content} ${newBmNode.url} ${pageContent.url}` : `${newBmNode.title} ${newBmNode.url}` // Index both the page content if available, but also the page title, the bookmark title and bookmark URL, but fallback to only bookmark data in case the pageContent is inaccessible (eg, suspended tab, because we cannot access the content of pages created by other extensions)
+    };
+
+    // generate UUID for new bookmark
     newBm['uuid'] = uuid();
+    // add new bookmark newBm to the Lunr index
     index.add(newBm);
+    // and add to bms array
     bms.push(newBm);
 
-    // save index
+    // save to persist index into local storage
     await saveToLocalStorage(constants.SAVED_INDEX, JSON.stringify(index));
     await saveToLocalStorage(constants.SAVED_BMS, JSON.stringify(bms));
   })()).then(() => {
