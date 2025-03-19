@@ -5,7 +5,7 @@ html {
     font-family: Arial, sans-serif;
     width: 640px;
     height: 360px;
-    overflow: scroll;
+    overflow: auto;
 }
 
 .centered-content {
@@ -276,4 +276,46 @@ html.dark-mode-body {
     height: 16px;
     vertical-align: middle;
     margin-right: 5px;
+}
+
+/* Scrollbar styles */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Firefox scrollbar styles */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #888 #f1f1f1;
+}
+
+/* Dark mode scrollbar styles */
+.dark-mode-body ::-webkit-scrollbar-track {
+    background: #1e1e1e; /* Dark track color for dark mode */
+}
+
+.dark-mode-body ::-webkit-scrollbar-thumb {
+    background: #666; /* Light thumb color for dark mode */
+}
+
+.dark-mode-body ::-webkit-scrollbar-thumb:hover {
+    background: #999; /* Lighter thumb color on hover in dark mode */
+}
+
+.dark-mode-body * {
+    scrollbar-color: #666 #1e1e1e; /* Dark mode scrollbar colors for Firefox */
 }
