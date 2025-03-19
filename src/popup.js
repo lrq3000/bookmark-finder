@@ -108,20 +108,6 @@ const handleQueryResult = (res) => {
                 </li>
             `;
         });
-
-        // recommendations
-        // if (res && res.recommendations && res.recommendations.length > 0) {
-        //     content += `<div class="result_row hr">Recommendations</div>`;
-
-        //     res.recommendations.forEach(o => {
-        //         content += `
-        //         <div class="result_row">
-        //             <p>${o.bm.title}</p>
-        //             <p><a href="${o.bm.url}" target="_blank">${o.bm.url}</a></p>
-        //         </div>
-        //     `;
-        //     });
-        // }
     }
     else {
         content += `
@@ -214,4 +200,49 @@ document.addEventListener('DOMContentLoaded', async () => {
             inputBox.focus();
         }
     };
+
+    // Dark mode toggle
+    const darkModeToggle = document.querySelector(`#dark_mode_toggle`);
+    const body = document.querySelector(`body`);
+
+    const enableDarkMode = () => {
+        body.classList.add('dark-mode-body');
+        document.querySelectorAll('.search-bar').forEach(e => e.classList.add('dark-mode-search-bar'));
+        document.querySelectorAll('.search-button').forEach(e => e.classList.add('dark-mode-search-button'));
+        document.querySelectorAll('.focus-button').forEach(e => e.classList.add('dark-mode-focus-button'));
+        document.querySelectorAll('.search-bar-on-rp').forEach(e => e.classList.add('dark-mode-search-bar-on-rp'));
+        document.querySelectorAll('.search-button-on-rp').forEach(e => e.classList.add('dark-mode-search-button-on-rp'));
+        document.querySelectorAll('.search-result').forEach(e => e.classList.add('dark-mode-search-result'));
+        darkModeToggle.innerHTML = '<img src="./img/sun_icon.png" alt="Light Mode" class="dark-mode-icon"> Light Mode';
+        chrome.storage.local.set({ darkMode: true });
+    };
+
+    const disableDarkMode = () => {
+        body.classList.remove('dark-mode-body');
+        document.querySelectorAll('.search-bar').forEach(e => e.classList.remove('dark-mode-search-bar'));
+        document.querySelectorAll('.search-button').forEach(e => e.classList.remove('dark-mode-search-button'));
+        document.querySelectorAll('.focus-button').forEach(e => e.classList.remove('dark-mode-focus-button'));
+        document.querySelectorAll('.search-bar-on-rp').forEach(e => e.classList.remove('dark-mode-search-bar-on-rp'));
+        document.querySelectorAll('.search-button-on-rp').forEach(e => e.classList.remove('dark-mode-search-button-on-rp'));
+        document.querySelectorAll('.search-result').forEach(e => e.classList.remove('dark-mode-search-result'));
+        darkModeToggle.innerHTML = '<img src="./img/moon_icon.png" alt="Dark Mode" class="dark-mode-icon"> Dark Mode';
+        chrome.storage.local.set({ darkMode: false });
+    };
+
+    darkModeToggle.onclick = () => {
+        chrome.storage.local.get(['darkMode'], (result) => {
+            if (result.darkMode) {
+                disableDarkMode();
+            } else {
+                enableDarkMode();
+            }
+        });
+    };
+
+    // Check initial dark mode preference
+    chrome.storage.local.get(['darkMode'], (result) => {
+        if (result.darkMode === true) {
+            enableDarkMode();
+        }
+    });
 });

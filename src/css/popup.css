@@ -188,3 +188,85 @@ html {
 .result_page {
     display: none;
 }
+
+/* Dark Mode Styles */
+body.dark-mode-body,
+html.dark-mode-body {
+    background-color: #121212;
+    color: #ffffff;
+}
+
+.dark-mode-body .centered-content {
+    background-color: #121212; /* Ensure centered content is also dark in dark mode */
+}
+
+.dark-mode-body .search-bar {
+    background-color: #1e1e1e;
+    color: #ffffff;
+    border-color: #333333;
+}
+
+.dark-mode-body .search-button {
+    background-color: #252525;
+    color: #ffffff;
+    border-color: #252525;
+}
+
+.dark-mode-body .search-button:hover {
+    background-color: #333333;
+    box-shadow: 0 1px 1px rgba(255, 255, 255, 0.1);
+}
+
+.dark-mode-body .search-button:active {
+    background-color: #444444;
+    transform: translateY(2px);
+    box-shadow: 0 1px 2px rgba(255, 255, 255, 0.2);
+}
+
+.dark-mode-body .focus-button {
+    background-color: #03A6D6;
+    color: #ffffff;
+}
+
+.dark-mode-body .focus-button:active {
+    background-color: #014A64;
+    color: #ffffff;
+}
+
+.dark-mode-body .search-bar-on-rp {
+    background-color: #1e1e1e;
+    color: #ffffff;
+    border-color: #333333;
+}
+
+.dark-mode-body .search-button-on-rp {
+    background-color: #252525;
+    color: #ffffff;
+}
+
+.dark-mode-body .search-button-on-rp:hover {
+    background-color: #333333;
+}
+
+.dark-mode-body .search-results {
+    background-color: #121212; /* Dark background for results container */
+}
+
+.dark-mode-body .search-result {
+    background-color: #1e1e1e;
+    color: #ffffff;
+    border-color: #333333;
+}
+
+.dark-mode-body .search-result h3 {
+    color: #ffffff;
+}
+
+.dark-mode-body .search-result h3 a {
+    color: #ffffff; /* Light color for title in dark mode */
+}
+
+.dark-mode-body .search-result .snippet,
+.dark-mode-body .search-result .url {
+    color: #cccccc;
+}
