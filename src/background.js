@@ -405,6 +405,7 @@ chrome.bookmarks.onCreated.addListener((id, newBmNode) => {
   Promise.resolve((async () => {
     console.log(`adding new bm on-the-fly`);
     // retrieve the current index from local storage.
+    index = await getIndex();
     if (!index) { // Check if index is null (not yet created)
       // Create a new empty index
       // This allows to start indexing newly created bookmarks even if we did not index past ones via a full reindex (very time consuming)
@@ -415,7 +416,6 @@ chrome.bookmarks.onCreated.addListener((id, newBmNode) => {
       });
       console.log(`default empty index created on first bookmark`);
     }
-    index = await getIndex();
     // capture the content of the newly bookmarked page. This function opens the bookmark URL in a tab (briefly), executes content scripts to extract the title and content, and then closes the tab.
     let pageContent = { content: "" }; // Default empty content
     try { // this may fail if tab is opened by another extension (eg, suspended tab)
