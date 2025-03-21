@@ -361,15 +361,21 @@ const getIndexedBookmarks = async (request, sender) => {
 
 // handler - prune stale bookmarks
 const pruneBookmarks = async (request, sender) => {
+  // Remove indexed entries in the Lunr database that refer to the given URL to remove (usually a URL that is not present is any bookmarks anymore)
   console.log(`pruneBookmarks`);
 
-  const urlToRemove = request.url;
+  // Extract data from request
+  const urlToRemove = request.url; // URL to remove from bookmarks
+
+  // Initialize pruned count
   let prunedCount = 0;
 
+  // Check if we have all the necessary data to prune
   if (bms && index && urlToRemove) {
+    // Save initial length of bookmarks
     const initialBmsLength = bms.length;
 
-    // Filter out bookmarks with the URL to remove
+    // Filter out bookmarks that have the URL to remove
     bms = bms.filter(bm => bm.url !== urlToRemove);
 
     // Remove documents from Lunr index with the URL to remove
@@ -379,12 +385,15 @@ const pruneBookmarks = async (request, sender) => {
       this.metadataWhitelist = ['position'];
     });
 
+    // Re-add all bookmarks that are not removed
     bms.forEach(function (doc) {
       newIndex.add(doc);
     });
 
+    // Update index
     index = newIndex;
 
+    // Calculate pruned count
     prunedCount = initialBmsLength - bms.length;
 
     // save updated index and bookmarks
