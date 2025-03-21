@@ -411,6 +411,7 @@ const pruneBookmarks = async (request, sender) => {
 };
 // listener - new bookmark added
 chrome.bookmarks.onCreated.addListener((id, newBmNode) => {
+  // Note: this listener gets triggered as soon as the user clicks on the bookmark star icon, before the bookmark is actually created and before the user chooses a title. If the user chooses a title, it will trigger the onChanged listener.
   Promise.resolve((async () => {
     console.log(`adding new bm on-the-fly`);
     // retrieve the current index from local storage.
@@ -435,10 +436,13 @@ chrome.bookmarks.onCreated.addListener((id, newBmNode) => {
       // Use default empty content
     }
 
+    // Fetch bookmark details using chrome.bookmarks.get
+    //const bmNode = await chrome.bookmarks.get(id);
+
     const newBm = {
-      title: newBmNode.title, // Bookmark title
-      url: newBmNode.url,     // Bookmark URL
-      content: pageContent.content ? `${newBmNode.title} ${pageContent.title} ${pageContent.content} ${newBmNode.url} ${pageContent.url}` : `${newBmNode.title} ${newBmNode.url}` // Index both the page content if available, but also the page title, the bookmark title and bookmark URL, but fallback to only bookmark data in case the pageContent is inaccessible (eg, suspended tab, because we cannot access the content of pages created by other extensions)
+      title: newBmNode.title, // Bookmark title. Alternative: bmNode[0].title
+      url: newBmNode.url,     // Bookmark URL. Alternative: bmNode[0].url
+      content: pageContent.content ? `${newBmNode.title} \n ${pageContent.title} \n ${pageContent.content} \n ${newBmNode.url} \n ${pageContent.url}` : `${newBmNode.title} \n ${newBmNode.url}` // Index both the page content if available, but also the page title, the bookmark title and bookmark URL, but fallback to only bookmark data in case the pageContent is inaccessible (eg, suspended tab, because we cannot access the content of pages created by other extensions)
     };
 
     // generate UUID for new bookmark
@@ -453,5 +457,49 @@ chrome.bookmarks.onCreated.addListener((id, newBmNode) => {
     await saveToLocalStorage(constants.SAVED_BMS, JSON.stringify(bms));
   })()).then(() => {
     console.log(`bookmark has been added.`);
+  });
+});
+
+// listener - bookmark title or url changed
+chrome.bookmarks.onChanged.addListener((id, changeInfo) => {
+  Promise.resolve((async () => {
+    console.log(`bookmark changed on-the-fly: ${id}`);
+    // retrieve the current index from local storage.
+    index = await getIndex();
+    if (!index) {
+      console.warn(`Index not initialized when bookmark changed`);
+      return; // Index not initialized, do nothing
+    }
+
+    // Fetch updated bookmark details using chrome.bookmarks.get
+    const bmNode = await chrome.bookmarks.get(id);
+
+    // Find the bookmark in the bms array
+    const existingBmIndex = bms.findIndex(bm => bm.uuid === id); // Assuming bookmark ID is used as UUID
+
+    if (existingBmIndex !== -1) {
+      // Remove old bookmark from index
+      index.remove({ ref: id }); // Assuming bookmark ID is used as UUID
+      // Remove old bookmark from bms array
+      bms.splice(existingBmIndex, 1);
+    }
+
+    const newBm = {
+      uuid: id, // Use bookmark ID as UUID
+      title: bmNode[0].title, // Bookmark title from chrome.bookmarks.get
+      url: bmNode[0].url,     // Bookmark URL
+      content: `${bmNode[0].title} \n ${bmNode[0].url}` // Index bookmark title and URL for now, re-index to get page content
+    };
+
+    // add updated bookmark newBm to the Lunr index
+    index.add(newBm);
+    // and add to bms array
+    bms.push(newBm);
+
+    // save to persist index into local storage
+    await saveToLocalStorage(constants.SAVED_INDEX, JSON.stringify(index));
+    await saveToLocalStorage(constants.SAVED_BMS, JSON.stringify(bms));
+  })()).then(() => {
+    console.log(`bookmark has been updated in index.`);
   });
 });
